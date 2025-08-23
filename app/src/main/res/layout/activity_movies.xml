@@ -1,17 +1,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/white">
 
-    <EditText android:id="@+id/queryInput"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchBar"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_gravity="center_vertical"
-        android:textColor="@color/black"
-        android:imeOptions="actionDone"
-        android:singleLine="true"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="Search"
+        android:textColorHint="@color/gray"
+        app:boxStrokeColor="@color/light_gray"
+        app:boxStrokeErrorColor="@color/red"
+        app:boxStrokeWidth="1dp"
+        app:hintTextColor="@color/gray"
+        app:iconStartPadding="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_search_24"
+        app:startIconTint="@color/gray"
+        app:endIconMode="clear_text"
+        app:endIconDrawable="@drawable/ic_close"
+        app:endIconTint="@color/gray">
+
+        <EditText
+            android:id="@+id/queryInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="textCapWords|textAutoComplete"
+            android:maxLines="1"
+            android:paddingStart="48dp"
+            android:singleLine="true"
+            android:textColor="@color/black" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <FrameLayout android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,7 +54,8 @@
 
         <androidx.recyclerview.widget.RecyclerView android:id="@+id/movies"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:padding="8dp"/>
 
         <TextView android:id="@+id/placeholderMessage"
             android:layout_width="300dp"
