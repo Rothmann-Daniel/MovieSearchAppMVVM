@@ -1,21 +1,49 @@
 package com.example.moviesearchapp_mvvm.data.network
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import com.example.moviesearchapp_mvvm.data.dto.MovieDetailsRequest
 import com.example.moviesearchapp_mvvm.data.dto.MoviesSearchRequest
 import com.example.moviesearchapp_mvvm.data.dto.Response
 
 class RetrofitNetworkClient(
+    private val context: Context,
     private val imdbService: IMDbApiService
 ) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
-        if (dto is MoviesSearchRequest) {
-            val resp = imdbService.searchMovies(dto.expression).execute()
-
-            val body = resp.body() ?: Response()
-
-            return body.apply { resultCode = resp.code() }
-        } else {
+        if (!isConnected()) {
+            return Response().apply { resultCode = -1 }
+        }
+        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest)) {
             return Response().apply { resultCode = 400 }
         }
+
+        val response = if (dto is MoviesSearchRequest) {
+            imdbService.searchMovies(dto.expression).execute()
+        } else {
+            imdbService.getMovieDetails((dto as MovieDetailsRequest).movieId).execute()
+        }
+        val body = response.body()
+        return if (body != null) {
+            body.apply { resultCode = response.code() }
+        } else {
+            Response().apply { resultCode = response.code() }
+        }
+    }
+
+    private fun isConnected(): Boolean {
+        val connectivityManager = context.getSystemService(
+            Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> return true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> return true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> return true
+            }
+        }
+        return false
     }
 }

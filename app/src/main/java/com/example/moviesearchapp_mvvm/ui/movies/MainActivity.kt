@@ -12,14 +12,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesearchapp_mvvm.R
 import com.example.moviesearchapp_mvvm.domain.models.Movie
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesState
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
-import com.example.moviesearchapp_mvvm.ui.poster.PosterActivity
+import com.example.moviesearchapp_mvvm.ui.poster.DetailsActivity // ИМПОРТИРУЙТЕ DetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -46,13 +45,15 @@ class MainActivity : AppCompatActivity() {
 
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.queryInput)
-        moviesRecyclerView = findViewById(R.id.movies) // Исправлено на правильный ID
+        moviesRecyclerView = findViewById(R.id.movies)
         progressBar = findViewById(R.id.progressBar)
 
         adapter = MoviesAdapter { movie ->
             if (clickDebounce()) {
-                val intent = Intent(this, PosterActivity::class.java)
+                // ЗАМЕНИТЕ PosterActivity на DetailsActivity
+                val intent = Intent(this, DetailsActivity::class.java)
                 intent.putExtra("poster", movie.image)
+                intent.putExtra("id", movie.id) // Добавьте ID фильма
                 startActivity(intent)
             }
         }

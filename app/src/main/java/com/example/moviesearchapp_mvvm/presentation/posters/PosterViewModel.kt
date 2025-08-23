@@ -7,14 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 
-class PosterViewModel(posterUrl:String): ViewModel() {
-    private val urlLiveData= MutableLiveData(posterUrl)
+class PosterViewModel(private val posterUrl: String) : ViewModel() {
+
+    private val urlLiveData = MutableLiveData(posterUrl)
     fun observeUrl(): LiveData<String> = urlLiveData
-    companion object{
-        fun getFactory(url: String): ViewModelProvider.Factory= viewModelFactory {
-            initializer {
-                PosterViewModel(url)
-            }
-        }
-    }
 }

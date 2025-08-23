@@ -1,7 +1,10 @@
 package com.example.moviesearchapp_mvvm.domain.impl
 
+import com.example.moviesearchapp_mvvm.Resource
 import com.example.moviesearchapp_mvvm.domain.api.MoviesInteractor
 import com.example.moviesearchapp_mvvm.domain.api.MoviesRepository
+import com.example.moviesearchapp_mvvm.domain.models.Movie
+import com.example.moviesearchapp_mvvm.domain.models.MovieDetails
 import java.util.concurrent.Executors
 
 class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInteractor {
@@ -10,12 +13,20 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
 
     override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
         executor.execute {
-            try {
-                val movies = repository.searchMovies(expression)
-                consumer.consume(movies, null) // Успех: передаем movies и null для errorMessage
-            } catch (e: Exception) {
-                consumer.consume(null, e.message) // Ошибка: передаем null для movies и сообщение об ошибке
+            when(val resource = repository.searchMovies(expression)) {
+                is Resource.Success -> { consumer.consume(resource.data, null) }
+                is Resource.Error -> { consumer.consume(resource.data, resource.message) }
             }
         }
     }
+
+    override fun getMoviesDetails(movieId: String, consumer: MoviesInteractor.MovieDetailsConsumer) {
+        executor.execute {
+            when(val resource = repository.getMovieDetails(movieId)) {
+                is Resource.Success -> { consumer.consume(resource.data, null) }
+                is Resource.Error -> { consumer.consume(resource.data, resource.message) }
+            }
+        }
+    }
+
 }

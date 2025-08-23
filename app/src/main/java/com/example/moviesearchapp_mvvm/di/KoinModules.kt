@@ -9,6 +9,7 @@ import com.example.moviesearchapp_mvvm.domain.api.MoviesInteractor
 import com.example.moviesearchapp_mvvm.domain.api.MoviesRepository
 import com.example.moviesearchapp_mvvm.domain.impl.MoviesInteractorImpl
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
+import com.example.moviesearchapp_mvvm.presentation.posters.AboutViewModel
 import com.example.moviesearchapp_mvvm.presentation.posters.PosterViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -29,7 +30,12 @@ val networkModule = module {
         get<Retrofit>().create(IMDbApiService::class.java)
     }
 
-    single<NetworkClient> { RetrofitNetworkClient(get()) }
+    single<NetworkClient> {
+        RetrofitNetworkClient(
+            context = androidContext(),
+            imdbService = get()
+        )
+    }
 }
 val repositoryModule = module {
     single<MoviesRepository> { MoviesRepositoryImpl(get()) }
@@ -50,4 +56,14 @@ val viewModelModule = module {
     viewModel { (posterUrl: String) ->
         PosterViewModel(posterUrl)
     }
+
+    viewModel {
+        MoviesViewModel(androidContext(), get())
+    }
+
+    viewModel {(movieId: String) ->
+        AboutViewModel(movieId, get())
+    }
+
+
 }

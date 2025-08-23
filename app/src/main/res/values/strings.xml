@@ -18,4 +18,15 @@
 
     <string name="details">Подробнее</string>
     <string name="movie_cover">Обложка фильма</string>
+
+
+    <string name="poster">ПОСТЕР</string>
+    <string name="rating">Рейтинг IMDb:</string>
+    <string name="year">Год:</string>
+    <string name="country">Страна:</string>
+    <string name="genre">Жанр:</string>
+    <string name="director">Режиссёр:</string>
+    <string name="writer">Сценарист:</string>
+    <string name="cast">В ролях:</string>
+    <string name="plot">Сюжет:</string>
 </resources>
