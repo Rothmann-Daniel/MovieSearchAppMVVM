@@ -5,7 +5,9 @@ import com.example.moviesearchapp_mvvm.data.dto.MoviesSearchRequest
 import com.example.moviesearchapp_mvvm.data.dto.MoviesSearchResponse
 import com.example.moviesearchapp_mvvm.domain.api.MoviesRepository
 
-class MoviesRepositoryImpl(private val networkClient: NetworkClient) : MoviesRepository {
+class MoviesRepositoryImpl(
+    private val networkClient: NetworkClient
+) : MoviesRepository {
 
     override fun searchMovies(expression: String): List<Movie> {
         val response = networkClient.doRequest(MoviesSearchRequest(expression))

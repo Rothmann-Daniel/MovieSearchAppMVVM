@@ -20,14 +20,16 @@ import com.example.moviesearchapp_mvvm.domain.models.Movie
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesState
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
 import com.example.moviesearchapp_mvvm.ui.poster.PosterActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : AppCompatActivity() {
+    private val viewModel: MoviesViewModel by viewModel(parameters = { parametersOf(applicationContext) })
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private var viewModel: MoviesViewModel? = null
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
     private lateinit var moviesRecyclerView: RecyclerView
@@ -58,10 +60,10 @@ class MainActivity : AppCompatActivity() {
         moviesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         moviesRecyclerView.adapter = adapter
 
-        viewModel = ViewModelProvider(this, MoviesViewModel.getFactory(applicationContext))[MoviesViewModel::class.java]
-        viewModel?.observeState()?.observe(this) {
+        viewModel.observeState().observe(this) {
             render(it)
         }
+
         viewModel?.observeShowToast()?.observe(this) {
             showToast(it.toString())
         }

@@ -7,36 +7,28 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.moviesearchapp_mvvm.Creator
-import com.example.moviesearchapp_mvvm.MoviesApplication
+import androidx.lifecycle.viewModelScope
 import com.example.moviesearchapp_mvvm.R
 import com.example.moviesearchapp_mvvm.domain.api.MoviesInteractor
 import com.example.moviesearchapp_mvvm.domain.models.Movie
+import kotlinx.coroutines.launch
 
-class MoviesViewModel(context: Context): ViewModel() {
+class MoviesViewModel(
+    private val context: Context,
+    private val moviesInteractor: MoviesInteractor
+) : ViewModel() {
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        fun getFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MoviesViewModel(context)
-            }
-        }
     }
-
-    private val moviesInteractor = Creator.provideMoviesInteractor(context)
 
     private var latestSearchText: String? = null
 
     private val handler = Handler(Looper.getMainLooper())
-    private val stateLiveData= MutableLiveData<MoviesState>()
-    fun observeState(): LiveData<MoviesState> =stateLiveData
-    private val showToast= SingleLiveEvent<String?>()
-    fun observeShowToast(): LiveData<String?> =showToast
+    private val stateLiveData = MutableLiveData<MoviesState>()
+    fun observeState(): LiveData<MoviesState> = stateLiveData
+    private val showToast = SingleLiveEvent<String?>()
+    fun observeShowToast(): LiveData<String?> = showToast
 
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
@@ -58,48 +50,35 @@ class MoviesViewModel(context: Context): ViewModel() {
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            renderState(
-                MoviesState.Loading
-            )
+            renderState(MoviesState.Loading)
 
             moviesInteractor.searchMovies(newSearchText, object : MoviesInteractor.MoviesConsumer {
                 override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
                     handler.post {
-                        // Готовим список найденных фильмов для передачи в конструктор MoviesState
-                        val movies = mutableListOf<Movie>()
-                        if (foundMovies != null) {
-                            movies.addAll(foundMovies)
-                        }
+                        val movies = foundMovies?.toMutableList() ?: mutableListOf()
 
                         when {
                             errorMessage != null -> {
                                 renderState(
                                     MoviesState.Error(
-                                        errorMessage = "Something went wrong",
+                                        errorMessage = context.getString(R.string.something_went_wrong),
                                     )
                                 )
-
                                 showToast.postValue(errorMessage)
-
                             }
-
                             movies.isEmpty() -> {
                                 renderState(
                                     MoviesState.Empty(
-                                        message = "Nothing found"
+                                        message = context.getString(R.string.nothing_found)
                                     )
                                 )
                             }
-
                             else -> {
                                 renderState(
-                                    MoviesState.Content(
-                                        movies = movies,
-                                    )
+                                    MoviesState.Content(movies = movies)
                                 )
                             }
                         }
-
                     }
                 }
             })
@@ -108,7 +87,6 @@ class MoviesViewModel(context: Context): ViewModel() {
 
     private fun renderState(state: MoviesState) {
         stateLiveData.postValue(state)
-
     }
 
     override fun onCleared() {

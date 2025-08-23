@@ -70,4 +70,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     implementation("androidx.activity:activity-ktx:1.6.1")
+
+    // Koin
+    implementation("io.insert-koin:koin-android:3.4.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.3")
+    implementation("io.insert-koin:koin-androidx-workmanager:3.4.3")
+    implementation("io.insert-koin:koin-androidx-navigation:3.4.3")
 }

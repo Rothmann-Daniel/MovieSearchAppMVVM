@@ -2,19 +2,10 @@ package com.example.moviesearchapp_mvvm.data.network
 
 import com.example.moviesearchapp_mvvm.data.dto.MoviesSearchRequest
 import com.example.moviesearchapp_mvvm.data.dto.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient : NetworkClient {
-
-    private val imdbBaseUrl = "https://tv-api.com"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(imdbBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val imdbService = retrofit.create(IMDbApiService::class.java)
+class RetrofitNetworkClient(
+    private val imdbService: IMDbApiService
+) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (dto is MoviesSearchRequest) {
