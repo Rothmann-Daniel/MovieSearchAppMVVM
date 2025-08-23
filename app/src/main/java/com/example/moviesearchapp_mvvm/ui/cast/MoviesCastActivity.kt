@@ -75,10 +75,11 @@ class MoviesCastActivity : AppCompatActivity() {
         binding.errorMessageTextView.isVisible = false
 
         binding.contentContainer.isVisible = true
-        binding.movieTitle.text = state.movie.fullTitle
 
-        // Просто объединяем всех участников в единый список и отображаем
-        adapter.persons = state.movie.directors + state.movie.writers + state.movie.actors + state.movie.others
+        // Меняем привязку стейта к UI-элементам
+        binding.movieTitle.text = state.fullTitle
+        adapter.items = state.items
+
         adapter.notifyDataSetChanged()
     }
 }

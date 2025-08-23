@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.moviesearchapp_mvvm.R
 import com.example.moviesearchapp_mvvm.domain.models.MovieCastPerson
+import com.example.moviesearchapp_mvvm.presentation.cast.MoviesCastRVItem
 
 class MovieCastViewHolder(parent: ViewGroup) :
     RecyclerView.ViewHolder(
@@ -20,17 +21,18 @@ class MovieCastViewHolder(parent: ViewGroup) :
     var personName: TextView = itemView.findViewById(R.id.actorNameTextView)
     var personDescription: TextView = itemView.findViewById(R.id.actorDescriptionTextView)
 
-    fun bind(movieCastPerson: MovieCastPerson) {
-        if (movieCastPerson.image == null) {
+    // Поменяли тип передаваемых данных
+    fun bind(item: MoviesCastRVItem.PersonItem) {
+        if (item.data.image == null) {
             actorImage.isVisible = false
         } else {
             Glide.with(itemView)
-                .load(movieCastPerson.image)
+                .load(item.data.image)
                 .into(actorImage)
             actorImage.isVisible = true
         }
 
-        personName.text = movieCastPerson.name
-        personDescription.text = movieCastPerson.description
+        personName.text = item.data.name
+        personDescription.text = item.data.description
     }
 }
