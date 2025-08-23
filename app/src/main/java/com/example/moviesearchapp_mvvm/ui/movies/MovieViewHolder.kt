@@ -7,11 +7,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.moviesearchapp_mvvm.R
+import com.example.moviesearchapp_mvvm.domain.models.Movie
 
 class MovieViewHolder(parent: ViewGroup) :
     RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context)
-        .inflate(R.layout.list_item_movie, parent, false)) {
+            .inflate(R.layout.list_item_movie, parent, false)) {
 
     var cover: ImageView = itemView.findViewById(R.id.cover)
     var title: TextView = itemView.findViewById(R.id.title)

@@ -1,17 +1,33 @@
 package com.example.moviesearchapp_mvvm.ui.poster
 
-import android.app.Activity
 import android.os.Bundle
-import com.example.moviesearchapp_mvvm.Creator
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.moviesearchapp_mvvm.R
+import com.example.moviesearchapp_mvvm.presentation.posters.PosterViewModel
 
-class PosterActivity : Activity() {
+class PosterActivity : AppCompatActivity(){
 
-    private val posterController = Creator.providePosterController(this)
+    private var viewModel: PosterViewModel?=null
+
+    private lateinit var poster: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_poster)
-        posterController.onCreate()
+        poster = findViewById(R.id.poster)
+        val imageUrl = intent.extras?.getString("poster", "") ?: ""
+        viewModel= ViewModelProvider(this, PosterViewModel.getFactory(imageUrl))[PosterViewModel::class.java]
+        viewModel?.observeUrl()?.observe(this) {
+            setupPosterImage(it)
+        }
+
+    }
+    fun setupPosterImage(url: String) {
+        Glide.with(applicationContext)
+            .load(url)
+            .into(poster)
     }
 }

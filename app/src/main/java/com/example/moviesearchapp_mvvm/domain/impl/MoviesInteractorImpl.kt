@@ -10,7 +10,12 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
 
     override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
         executor.execute {
-            consumer.consume(repository.searchMovies(expression))
+            try {
+                val movies = repository.searchMovies(expression)
+                consumer.consume(movies, null) // Успех: передаем movies и null для errorMessage
+            } catch (e: Exception) {
+                consumer.consume(null, e.message) // Ошибка: передаем null для movies и сообщение об ошибке
+            }
         }
     }
 }

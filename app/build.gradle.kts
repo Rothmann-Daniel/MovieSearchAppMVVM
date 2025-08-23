@@ -66,4 +66,8 @@ dependencies {
     implementation("com.github.moxy-community:moxy:$moxyVersion")
     implementation("com.github.moxy-community:moxy-android:$moxyVersion")
     kapt("com.github.moxy-community:moxy-compiler:$moxyVersion")
+
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.activity:activity-ktx:1.6.1")
 }
