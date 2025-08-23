@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieSearchApp_MVVM">
         <activity
-            android:name=".ui.MoviesCastActivity"
+            android:name=".ui.cast.MoviesCastActivity"
             android:exported="false" />
         <activity
             android:name=".ui.poster.PosterActivity"

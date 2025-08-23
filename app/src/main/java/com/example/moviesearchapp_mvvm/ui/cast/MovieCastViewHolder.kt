@@ -1,4 +1,4 @@
-package com.example.moviesearchapp_mvvm.presentation
+package com.example.moviesearchapp_mvvm.ui.cast
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

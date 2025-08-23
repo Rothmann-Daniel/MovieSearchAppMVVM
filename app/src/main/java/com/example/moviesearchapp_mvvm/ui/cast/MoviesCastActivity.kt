@@ -1,23 +1,17 @@
-package com.example.moviesearchapp_mvvm.ui
+package com.example.moviesearchapp_mvvm.ui.cast
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.moviesearchapp_mvvm.R
 import com.example.moviesearchapp_mvvm.databinding.ActivityMoviesCastBinding
-import com.example.moviesearchapp_mvvm.presentation.MoviesCastAdapter
-import com.example.moviesearchapp_mvvm.presentation.MoviesCastState
-import com.example.moviesearchapp_mvvm.presentation.MoviesCastViewModel
+import com.example.moviesearchapp_mvvm.presentation.cast.MoviesCastState
+import com.example.moviesearchapp_mvvm.presentation.cast.MoviesCastViewModel
+import com.example.moviesearchapp_mvvm.ui.cast.MoviesCastAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.getValue
-
 
 class MoviesCastActivity : AppCompatActivity() {
 

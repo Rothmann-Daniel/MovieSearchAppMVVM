@@ -9,7 +9,7 @@ import com.example.moviesearchapp_mvvm.data.network.RetrofitNetworkClient
 import com.example.moviesearchapp_mvvm.domain.api.MoviesInteractor
 import com.example.moviesearchapp_mvvm.domain.api.MoviesRepository
 import com.example.moviesearchapp_mvvm.domain.impl.MoviesInteractorImpl
-import com.example.moviesearchapp_mvvm.presentation.MoviesCastViewModel
+import com.example.moviesearchapp_mvvm.presentation.cast.MoviesCastViewModel
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutViewModel
 import com.example.moviesearchapp_mvvm.presentation.posters.PosterViewModel

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moviesearchapp_mvvm.R
 import com.example.moviesearchapp_mvvm.databinding.ActivityDetailsBinding
-import com.example.moviesearchapp_mvvm.presentation.posters.DetailsViewPagerAdapter
+import com.example.moviesearchapp_mvvm.ui.poster.DetailsViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 class DetailsActivity : AppCompatActivity() {

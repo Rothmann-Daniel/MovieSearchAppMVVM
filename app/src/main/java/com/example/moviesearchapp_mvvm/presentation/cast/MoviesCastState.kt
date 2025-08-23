@@ -1,4 +1,4 @@
-package com.example.moviesearchapp_mvvm.presentation
+package com.example.moviesearchapp_mvvm.presentation.cast
 
 import com.example.moviesearchapp_mvvm.domain.models.MovieCast
 

@@ -9,7 +9,7 @@ import com.example.moviesearchapp_mvvm.databinding.FragmentAboutBinding
 import com.example.moviesearchapp_mvvm.domain.models.MovieDetails
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutState
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutViewModel
-import com.example.moviesearchapp_mvvm.ui.MoviesCastActivity
+import com.example.moviesearchapp_mvvm.ui.cast.MoviesCastActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
