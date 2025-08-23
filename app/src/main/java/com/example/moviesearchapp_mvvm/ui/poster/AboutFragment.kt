@@ -9,6 +9,7 @@ import com.example.moviesearchapp_mvvm.databinding.FragmentAboutBinding
 import com.example.moviesearchapp_mvvm.domain.models.MovieDetails
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutState
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutViewModel
+import com.example.moviesearchapp_mvvm.ui.MoviesCastActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -47,6 +48,15 @@ class AboutFragment : Fragment() {
                 is AboutState.Content -> showDetails(it.movie)
                 is AboutState.Error -> showErrorMessage(it.message)
             }
+        }
+
+        binding.showCastButton.setOnClickListener {
+            startActivity(
+                MoviesCastActivity.newInstance(
+                    context = requireContext(),
+                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+                )
+            )
         }
     }
 

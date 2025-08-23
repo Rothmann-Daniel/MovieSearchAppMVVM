@@ -1,6 +1,6 @@
 package com.example.moviesearchapp_mvvm.domain.impl
 
-import com.example.moviesearchapp_mvvm.Resource
+import com.example.moviesearchapp_mvvm.util.Resource
 import com.example.moviesearchapp_mvvm.domain.api.MoviesInteractor
 import com.example.moviesearchapp_mvvm.domain.api.MoviesRepository
 import com.example.moviesearchapp_mvvm.domain.models.Movie
@@ -23,6 +23,16 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
     override fun getMoviesDetails(movieId: String, consumer: MoviesInteractor.MovieDetailsConsumer) {
         executor.execute {
             when(val resource = repository.getMovieDetails(movieId)) {
+                is Resource.Success -> { consumer.consume(resource.data, null) }
+                is Resource.Error -> { consumer.consume(resource.data, resource.message) }
+            }
+        }
+    }
+
+    override fun getMovieCast(movieId: String, consumer: MoviesInteractor.MovieCastConsumer) {
+        executor.execute {
+            // Просто вызываем нужный метод Repository
+            when(val resource = repository.getMovieCast(movieId)) {
                 is Resource.Success -> { consumer.consume(resource.data, null) }
                 is Resource.Error -> { consumer.consume(resource.data, resource.message) }
             }

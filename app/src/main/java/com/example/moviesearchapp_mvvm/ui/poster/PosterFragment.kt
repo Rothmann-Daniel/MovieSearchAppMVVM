@@ -1,4 +1,4 @@
-package com.example.moviesearchapp_mvvm.ui
+package com.example.moviesearchapp_mvvm.ui.poster
 
 import android.os.Bundle
 import android.view.LayoutInflater

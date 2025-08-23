@@ -1,6 +1,7 @@
 package com.example.moviesearchapp_mvvm.di
 
 import android.content.Context
+import com.example.moviesearchapp_mvvm.data.converters.MovieCastConverter
 import com.example.moviesearchapp_mvvm.data.network.IMDbApiService
 import com.example.moviesearchapp_mvvm.data.network.MoviesRepositoryImpl
 import com.example.moviesearchapp_mvvm.data.network.NetworkClient
@@ -8,6 +9,7 @@ import com.example.moviesearchapp_mvvm.data.network.RetrofitNetworkClient
 import com.example.moviesearchapp_mvvm.domain.api.MoviesInteractor
 import com.example.moviesearchapp_mvvm.domain.api.MoviesRepository
 import com.example.moviesearchapp_mvvm.domain.impl.MoviesInteractorImpl
+import com.example.moviesearchapp_mvvm.presentation.MoviesCastViewModel
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutViewModel
 import com.example.moviesearchapp_mvvm.presentation.posters.PosterViewModel
@@ -38,7 +40,15 @@ val networkModule = module {
     }
 }
 val repositoryModule = module {
-    single<MoviesRepository> { MoviesRepositoryImpl(get()) }
+
+    // Добавили фабрику для конвертера
+    factory { MovieCastConverter() }
+
+    single<MoviesRepository> {
+        // Добавили ещё один `get()`, чтобы количество аргументов совпадало
+        MoviesRepositoryImpl(get(), get())
+    }
+
 }
 
 val interactorModule = module {
@@ -65,5 +75,8 @@ val viewModelModule = module {
         AboutViewModel(movieId, get())
     }
 
+    viewModel { (movieId: String) ->
+        MoviesCastViewModel(movieId, get())
+    }
 
 }

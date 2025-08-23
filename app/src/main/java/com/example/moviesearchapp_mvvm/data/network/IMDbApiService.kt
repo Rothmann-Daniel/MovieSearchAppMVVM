@@ -1,5 +1,6 @@
 package com.example.moviesearchapp_mvvm.data.network
 
+import com.example.moviesearchapp_mvvm.data.dto.MovieCastResponse
 import com.example.moviesearchapp_mvvm.data.dto.MovieDetailsResponse
 import com.example.moviesearchapp_mvvm.data.dto.MoviesSearchResponse
 import retrofit2.Call
@@ -13,4 +14,7 @@ interface IMDbApiService {
 
     @GET("/en/API/Title/$IMDB_API_KEY/{movie_id}")
     fun getMovieDetails(@Path("movie_id") movieId: String): Call<MovieDetailsResponse>
+
+    @GET("/en/API/FullCast/$IMDB_API_KEY/{movie_id}")
+    fun getFullCast(@Path("movie_id") movieId: String): Call<MovieCastResponse>
 }
