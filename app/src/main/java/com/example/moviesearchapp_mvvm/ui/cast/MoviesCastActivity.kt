@@ -10,6 +10,7 @@ import com.example.moviesearchapp_mvvm.databinding.ActivityMoviesCastBinding
 import com.example.moviesearchapp_mvvm.presentation.cast.MoviesCastState
 import com.example.moviesearchapp_mvvm.presentation.cast.MoviesCastViewModel
 import com.example.moviesearchapp_mvvm.ui.cast.MoviesCastAdapter
+import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -31,7 +32,10 @@ class MoviesCastActivity : AppCompatActivity() {
         parametersOf(intent.getStringExtra(ARGS_MOVIE_ID))
     }
 
-    private val adapter = MoviesCastAdapter()
+    private val adapter = ListDelegationAdapter(
+        movieCastHeaderDelegate(),
+        movieCastPersonDelegate(),
+    )
 
     private lateinit var binding: ActivityMoviesCastBinding
 
