@@ -28,11 +28,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         viewBinding = true
@@ -81,5 +81,7 @@ dependencies {
     implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2")
     // Подключаем модуль для работы с ViewBinding
     implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2")
-
+    kotlin {
+        jvmToolchain(17)
+    }
 }

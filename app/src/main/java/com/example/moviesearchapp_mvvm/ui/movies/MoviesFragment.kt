@@ -1,71 +1,94 @@
 package com.example.moviesearchapp_mvvm.ui.movies
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesearchapp_mvvm.R
+import com.example.moviesearchapp_mvvm.databinding.FragmentMoviesBinding
 import com.example.moviesearchapp_mvvm.domain.models.Movie
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesState
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
-import com.example.moviesearchapp_mvvm.ui.poster.DetailsActivity // ИМПОРТИРУЙТЕ DetailsActivity
+import com.example.moviesearchapp_mvvm.ui.poster.DetailsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
-class MainActivity : AppCompatActivity() {
-    private val viewModel: MoviesViewModel by viewModel(parameters = { parametersOf(applicationContext) })
+class MoviesFragment : Fragment() {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
+    private val viewModel by viewModel<MoviesViewModel>()
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private lateinit var binding: FragmentMoviesBinding
+
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
     private lateinit var moviesRecyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
-    private lateinit var adapter: MoviesAdapter
+    private lateinit var textWatcher: TextWatcher
 
-    private var textWatcher: TextWatcher? = null
     private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_movies)
+    private val adapter = MoviesAdapter { movie ->
+        if (clickDebounce()) {
 
-        placeholderMessage = findViewById(R.id.placeholderMessage)
-        queryInput = findViewById(R.id.queryInput)
-        moviesRecyclerView = findViewById(R.id.movies)
-        progressBar = findViewById(R.id.progressBar)
+            // Навигируемся на следующий экран
+            parentFragmentManager.commit {
+                replace(
+                    // Указали, в каком контейнере работаем
+                    R.id.rootFragmentContainerView,
+                    // Создали фрагмент
+                    DetailsFragment.newInstance(
+                        movieId = movie.id,
+                        posterUrl = movie.image
+                    ),
+                    // Указали тег фрагмента
+                    DetailsFragment.TAG
+                )
 
-        adapter = MoviesAdapter { movie ->
-            if (clickDebounce()) {
-                // ЗАМЕНИТЕ PosterActivity на DetailsActivity
-                val intent = Intent(this, DetailsActivity::class.java)
-                intent.putExtra("poster", movie.image)
-                intent.putExtra("id", movie.id) // Добавьте ID фильма
-                startActivity(intent)
+                // Добавляем фрагмент в Back Stack
+                addToBackStack(DetailsFragment.TAG)
             }
-        }
 
-        moviesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentMoviesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        placeholderMessage = binding.placeholderMessage
+        queryInput = binding.queryInput
+        moviesRecyclerView = binding.locations
+        progressBar = binding.progressBar
+
+        moviesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         moviesRecyclerView.adapter = adapter
 
-        viewModel.observeState().observe(this) {
+        viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
 
-        viewModel?.observeShowToast()?.observe(this) {
+        viewModel?.observeShowToast()?.observe(viewLifecycleOwner) {
             showToast(it.toString())
         }
 
@@ -88,7 +111,9 @@ class MainActivity : AppCompatActivity() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            handler.postDelayed({ isClickAllowed = true },
+                com.example.moviesearchapp_mvvm.ui.movies.MoviesFragment.CLICK_DEBOUNCE_DELAY
+            )
         }
         return current
     }
@@ -118,7 +143,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     fun render(state: MoviesState) {
@@ -129,4 +154,5 @@ class MainActivity : AppCompatActivity() {
             is MoviesState.Empty -> showEmpty(state.message)
         }
     }
+
 }

@@ -15,14 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieSearchApp_MVVM">
+
         <activity
-            android:name=".ui.cast.MoviesCastActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.poster.PosterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.movies.MainActivity"
+            android:name=".ui.RootActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,9 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.poster.DetailsActivity"
-            android:exported="false" />
+
     </application>
 
 </manifest>
