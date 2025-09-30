@@ -8,9 +8,14 @@ import com.example.moviesearchapp_mvvm.data.network.NetworkClient
 import com.example.moviesearchapp_mvvm.data.network.RetrofitNetworkClient
 import com.example.moviesearchapp_mvvm.domain.api.MoviesInteractor
 import com.example.moviesearchapp_mvvm.domain.api.MoviesRepository
+import com.example.moviesearchapp_mvvm.domain.api.NamesInteractor
+import com.example.moviesearchapp_mvvm.domain.api.NamesRepository
 import com.example.moviesearchapp_mvvm.domain.impl.MoviesInteractorImpl
+import com.example.moviesearchapp_mvvm.domain.impl.NamesInteracrorImpl
+import com.example.moviesearchapp_mvvm.domain.impl.NamesRepositoryImpl
 import com.example.moviesearchapp_mvvm.presentation.cast.MoviesCastViewModel
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
+import com.example.moviesearchapp_mvvm.presentation.names.NamesViewModel
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutViewModel
 import com.example.moviesearchapp_mvvm.presentation.posters.PosterViewModel
 import org.koin.android.ext.koin.androidContext
@@ -49,11 +54,20 @@ val repositoryModule = module {
         MoviesRepositoryImpl(get(), get())
     }
 
+    single<NamesRepository> {
+        NamesRepositoryImpl(get())
+    }
+
 }
 
 val interactorModule = module {
     single<MoviesInteractor> { MoviesInteractorImpl(get()) }
+    single<NamesInteractor> {
+        NamesInteracrorImpl(get())
+    }
 }
+
+
 
 val viewModelModule = module {
     viewModel { (context: Context) ->
@@ -77,6 +91,10 @@ val viewModelModule = module {
 
     viewModel { (movieId: String) ->
         MoviesCastViewModel(movieId, get())
+    }
+
+    viewModel {
+        NamesViewModel(androidContext(), get())
     }
 
 }

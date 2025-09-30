@@ -1,12 +1,12 @@
 package com.example.moviesearchapp_mvvm.ui
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.moviesearchapp_mvvm.R
 import com.example.moviesearchapp_mvvm.databinding.ActivityRootBinding
-import com.example.moviesearchapp_mvvm.ui.movies.MoviesFragment
 
 class RootActivity : AppCompatActivity() {
 
@@ -14,17 +14,28 @@ class RootActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_root)
 
         binding = ActivityRootBinding.inflate(layoutInflater)
-        binding.root
-        if (savedInstanceState == null) {
-            // Добавляем фрагмент в контейнер
-            supportFragmentManager.commit {
-                this.add(R.id.rootFragmentContainerView, MoviesFragment())
+        setContentView(binding.root)
+
+        // Получаем NavHostFragment
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        // Настраиваем BottomNavigationView с NavController
+        binding.bottomNavigationView.setupWithNavController(navController)
+
+        // Слушатель изменения destination для скрытия/показа BottomNavigationView
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.detailsFragment, R.id.moviesCastFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
             }
         }
-
     }
 }

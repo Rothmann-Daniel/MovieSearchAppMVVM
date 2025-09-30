@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import com.example.moviesearchapp_mvvm.data.dto.MovieCastRequest
 import com.example.moviesearchapp_mvvm.data.dto.MovieDetailsRequest
 import com.example.moviesearchapp_mvvm.data.dto.MoviesSearchRequest
+import com.example.moviesearchapp_mvvm.data.dto.NamesSearchRequest
 import com.example.moviesearchapp_mvvm.data.dto.Response
 
 class RetrofitNetworkClient(
@@ -17,16 +18,21 @@ class RetrofitNetworkClient(
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
-        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest)) {
+
+        if ((dto !is MoviesSearchRequest) &&
+            (dto !is MovieDetailsRequest) &&
+            (dto !is MovieCastRequest) &&
+            (dto !is NamesSearchRequest)) {
             return Response().apply { resultCode = 400 }
         }
 
-        // Добавили в выражение when ещё одну ветку
         val response = when (dto) {
             is MoviesSearchRequest -> imdbService.searchMovies(dto.expression).execute()
             is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId).execute()
+            is NamesSearchRequest -> imdbService.searchNames(dto.expression).execute()
             else -> imdbService.getFullCast((dto as MovieCastRequest).movieId).execute()
         }
+
         val body = response.body()
         return if (body != null) {
             body.apply { resultCode = response.code() }

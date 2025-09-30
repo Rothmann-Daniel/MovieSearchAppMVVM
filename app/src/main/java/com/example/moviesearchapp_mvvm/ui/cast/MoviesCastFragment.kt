@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,26 +14,10 @@ import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-
 class MoviesCastFragment : Fragment() {
 
-    companion object {
-        const val TAG = "MoviesCastFragment"
-
-        private const val ARGS_MOVIE_ID = "movie_id"
-
-        fun newInstance(movieId: String): Fragment {
-            return MoviesCastFragment().apply {
-                arguments = bundleOf(
-                    ARGS_MOVIE_ID to movieId
-                )
-            }
-        }
-    }
-
     private val moviesCastViewModel: MoviesCastViewModel by viewModel {
-        // параметр movieId берём из аргументов фрагмента, а не Intent
-        parametersOf(requireArguments().getString(ARGS_MOVIE_ID))
+        parametersOf(requireArguments().getString("movie_id").orEmpty())
     }
 
     private val adapter = ListDelegationAdapter(
@@ -88,5 +71,4 @@ class MoviesCastFragment : Fragment() {
         adapter.items = state.items
         adapter.notifyDataSetChanged()
     }
-
 }

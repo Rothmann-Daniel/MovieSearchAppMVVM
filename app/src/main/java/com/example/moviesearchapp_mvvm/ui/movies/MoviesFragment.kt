@@ -13,7 +13,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesearchapp_mvvm.R
@@ -21,7 +21,6 @@ import com.example.moviesearchapp_mvvm.databinding.FragmentMoviesBinding
 import com.example.moviesearchapp_mvvm.domain.models.Movie
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesState
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
-import com.example.moviesearchapp_mvvm.ui.poster.DetailsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
@@ -46,25 +45,12 @@ class MoviesFragment : Fragment() {
 
     private val adapter = MoviesAdapter { movie ->
         if (clickDebounce()) {
-
-            // Навигируемся на следующий экран
-            parentFragmentManager.commit {
-                replace(
-                    // Указали, в каком контейнере работаем
-                    R.id.rootFragmentContainerView,
-                    // Создали фрагмент
-                    DetailsFragment.newInstance(
-                        movieId = movie.id,
-                        posterUrl = movie.image
-                    ),
-                    // Указали тег фрагмента
-                    DetailsFragment.TAG
-                )
-
-                // Добавляем фрагмент в Back Stack
-                addToBackStack(DetailsFragment.TAG)
+            // Навигируемся напрямую с bundle
+            val bundle = Bundle().apply {
+                putString("movieId", movie.id)
+                putString("posterUrl", movie.image)
             }
-
+            findNavController().navigate(R.id.action_moviesFragment_to_detailsFragment, bundle)
         }
     }
 
@@ -88,7 +74,7 @@ class MoviesFragment : Fragment() {
             render(it)
         }
 
-        viewModel?.observeShowToast()?.observe(viewLifecycleOwner) {
+        viewModel.observeShowToast().observe(viewLifecycleOwner) {
             showToast(it.toString())
         }
 
@@ -96,24 +82,22 @@ class MoviesFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
             override fun afterTextChanged(s: Editable?) { }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel?.searchDebounce(s?.toString() ?: "")
+                viewModel.searchDebounce(s?.toString() ?: "")
             }
         }
-        textWatcher?.let { queryInput.addTextChangedListener(it) }
+        queryInput.addTextChangedListener(textWatcher)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        textWatcher?.let { queryInput.removeTextChangedListener(it) }
+        queryInput.removeTextChangedListener(textWatcher)
     }
 
     private fun clickDebounce() : Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true },
-                com.example.moviesearchapp_mvvm.ui.movies.MoviesFragment.CLICK_DEBOUNCE_DELAY
-            )
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
     }
@@ -154,5 +138,4 @@ class MoviesFragment : Fragment() {
             is MoviesState.Empty -> showEmpty(state.message)
         }
     }
-
 }

@@ -1,35 +1,23 @@
 package com.example.moviesearchapp_mvvm.ui.poster
 
 import android.os.Bundle
-import android.text.TextUtils.replace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import com.example.moviesearchapp_mvvm.R
 import com.example.moviesearchapp_mvvm.databinding.FragmentAboutBinding
 import com.example.moviesearchapp_mvvm.domain.models.MovieDetails
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutState
 import com.example.moviesearchapp_mvvm.presentation.posters.AboutViewModel
-import com.example.moviesearchapp_mvvm.ui.cast.MoviesCastFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class AboutFragment : Fragment() {
 
-    companion object {
-        private const val MOVIE_ID = "movie_id"
-
-        fun newInstance(movieId: String) = AboutFragment().apply {
-            arguments = Bundle().apply {
-                putString(MOVIE_ID, movieId)
-            }
-        }
-    }
-
     private val aboutViewModel: AboutViewModel by viewModel {
-        parametersOf(requireArguments().getString(MOVIE_ID))
+        parametersOf(requireArguments().getString("movie_id"))
     }
 
     private lateinit var binding: FragmentAboutBinding
@@ -53,22 +41,15 @@ class AboutFragment : Fragment() {
             }
         }
 
-
         binding.showCastButton.setOnClickListener {
-            // Осуществляем навигацию
-            parentFragment?.parentFragmentManager?.commit {
-                replace(
-                    R.id.rootFragmentContainerView,
-                    MoviesCastFragment.newInstance(
-                        movieId = requireArguments().getString(MOVIE_ID).orEmpty()
-                    ),
-                    MoviesCastFragment.TAG
-                )
-                addToBackStack(MoviesCastFragment.TAG)
+            // Навигируемся напрямую с Bundle
+            val movieId = requireArguments().getString("movie_id").orEmpty()
+            val bundle = Bundle().apply {
+                putString("movie_id", movieId)
             }
+            findNavController().navigate(R.id.moviesCastFragment, bundle)
         }
     }
-
 
     private fun showErrorMessage(message: String) {
         binding.apply {
@@ -92,6 +73,5 @@ class AboutFragment : Fragment() {
             castValue.text = movieDetails.stars
             plot.text = movieDetails.plot
         }
-
     }
 }
