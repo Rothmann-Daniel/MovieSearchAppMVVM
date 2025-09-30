@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,10 @@ import com.example.moviesearchapp_mvvm.databinding.FragmentMoviesBinding
 import com.example.moviesearchapp_mvvm.domain.models.Movie
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesState
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
+import com.example.moviesearchapp_mvvm.ui.poster.DetailsFragment
+import com.example.moviesearchapp_mvvm.util.debounce
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
@@ -31,7 +36,7 @@ class MoviesFragment : Fragment() {
 
     private val viewModel by viewModel<MoviesViewModel>()
 
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var onMovieClickDebounce: (Movie) -> Unit
 
     private lateinit var binding: FragmentMoviesBinding
 
@@ -44,15 +49,10 @@ class MoviesFragment : Fragment() {
     private var isClickAllowed = true
 
     private val adapter = MoviesAdapter { movie ->
-        if (clickDebounce()) {
-            // Навигируемся напрямую с bundle
-            val bundle = Bundle().apply {
-                putString("movieId", movie.id)
-                putString("posterUrl", movie.image)
-            }
-            findNavController().navigate(R.id.action_moviesFragment_to_detailsFragment, bundle)
-        }
+        onMovieClickDebounce(movie)
     }
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMoviesBinding.inflate(inflater, container, false)
@@ -61,6 +61,14 @@ class MoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        onMovieClickDebounce = debounce<Movie>(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { movie ->
+            val action = MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment(
+                movie.id,  // без имени параметра
+                movie.image ?: ""  // без имени параметра
+            )
+            findNavController().navigate(action)
+        }
 
         placeholderMessage = binding.placeholderMessage
         queryInput = binding.queryInput
@@ -93,11 +101,14 @@ class MoviesFragment : Fragment() {
         queryInput.removeTextChangedListener(textWatcher)
     }
 
-    private fun clickDebounce() : Boolean {
+    private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }

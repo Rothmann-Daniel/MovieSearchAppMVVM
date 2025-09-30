@@ -28,8 +28,9 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Получаем аргументы напрямую из Bundle
-        val posterUrl = requireArguments().getString("posterUrl").orEmpty()
-        val movieId = requireArguments().getString("movieId").orEmpty()
+        val args = DetailsFragmentArgs.fromBundle(requireArguments())
+        val posterUrl = args.posterUrl
+        val movieId = args.movieId
 
         binding.viewPager.adapter = DetailsViewPagerAdapter(
             fragmentManager = childFragmentManager,

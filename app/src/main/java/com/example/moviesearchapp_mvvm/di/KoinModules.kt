@@ -11,7 +11,8 @@ import com.example.moviesearchapp_mvvm.domain.api.MoviesRepository
 import com.example.moviesearchapp_mvvm.domain.api.NamesInteractor
 import com.example.moviesearchapp_mvvm.domain.api.NamesRepository
 import com.example.moviesearchapp_mvvm.domain.impl.MoviesInteractorImpl
-import com.example.moviesearchapp_mvvm.domain.impl.NamesInteracrorImpl
+import com.example.moviesearchapp_mvvm.domain.impl.NamesInteractorImpl
+
 import com.example.moviesearchapp_mvvm.domain.impl.NamesRepositoryImpl
 import com.example.moviesearchapp_mvvm.presentation.cast.MoviesCastViewModel
 import com.example.moviesearchapp_mvvm.presentation.movies.MoviesViewModel
@@ -62,9 +63,7 @@ val repositoryModule = module {
 
 val interactorModule = module {
     single<MoviesInteractor> { MoviesInteractorImpl(get()) }
-    single<NamesInteractor> {
-        NamesInteracrorImpl(get())
-    }
+    single<NamesInteractor> { NamesInteractorImpl(get()) }
 }
 
 
